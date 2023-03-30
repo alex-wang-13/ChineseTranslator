@@ -19,7 +19,7 @@
         if (words[i].match(/[\u4E00-\u9FFF]/)) {
           highlightedText += "<span style='background-color: yellow'>" + words[i] + "</span>";
         } else {
-          highlightedText += words[i] + " ";
+          highlightedText += " " + words[i] + " ";
         }
       }
 
@@ -29,25 +29,64 @@
   </script>
 </head>
 <body>
-  <label for="textbox">Enter text:</label>
   <br>
   <!-- php to update the textarea with the highlighted text -->
+  <span>
+    <div>
+      <label for="textbox">Enter text:</label>
+      <br>
+      <textarea id="textbox" oninput="highlightWords()" rows="5" cols="50"></textarea>
+    </div>
+    <div>
+      <p>Highlighted Text:</p>
+      <p id="highlighted-text"></p>
+    </div>
+  </span>
+  <form method="POST">
+    <label for="key">Enter Chinese:</label>
+    <input type="text" name="key" id="key">
+    <br><br>
+    <label for="value">Enter English:</label>
+    <input type="text" name="value" id="value">
+    <br><br>
+    <input type="submit" name="submit" value="Store in Dictionary">
+    <input type="submit" name="reset" id="reset" value="Reset Dictionary">
+  </form>
   <?php
-    if(isset($_POST['submit'])) {
-      $text = $_POST['text'];
-      // add highlighted text
-      echo '<textarea id="textbox" rows="5" cols="50">'.$text.'</textarea>';
-    } else {
-      // create the textbox
-      echo '<textarea id="textbox" oninput="highlightWords()" rows="5" cols="50"></textarea>';
+    // start a session so that the dictionary can be updated between each submit
+    session_start();
+
+    // initialize the dictionary
+    if(!isset($_SESSION["dictionary"])) {
+      $_SESSION["dictionary"] = array();
     }
 
+    if(isset($_POST["submit"])) {
+      // key the key and value
+      $key = $_POST["key"];
+      $value = $_POST["value"];
+      // validate the key and value; the key should only have chinese characters and the value only non-chinese
+      if(preg_match("/^[\x{4e00}-\x{9fff}]+$/u", $key) && !preg_match("/^[\x{4e00}-\x{9fff}]+$/u", $value)) {
+        $dictionary = $_SESSION["dictionary"];
+        $dictionary[$key] = $value;
+        // update the dictionary
+        $_SESSION["dictionary"] = $dictionary;
+        echo "Chinese: ".$key."<br>";
+        echo "English: ".$value."<br>";
+      } else {
+        echo "Chinese: [invalid] <br>";
+        echo "English: [invalid] <br>";
+      }
+      echo "Dictionary: <br>";
+      print_r($_SESSION["dictionary"]);
+    }
+
+    if(isset($_POST["reset"])) {
+      $_SESSION["dictionary"] = array();
+      echo "Dictionary: <br>";
+      print_r($_SESSION["dictionary"]);
+    }
   ?>
-  <br>
-  <input type="submit" name="submit" value="Submit">
-  <br>
-  <p>Highlighted Text:</p>
-  <p id="highlighted-text"></p>
-    <hr>
-    <p>Note: further development can include inputting multiple website URLs and translating Chinese text (or other langauges) to English instead of just highlighting it.</p>
+  <hr>
+  <p>Note: further development can include inputting multiple website URLs and translating Chinese text (or other langauges) to English instead of just highlighting it.</p>
 </body>
