@@ -1,25 +1,23 @@
 <head>
-  <title>Highlight Textbox Words</title>
+  <title>Translate!</title>
   <script>
     function highlightWords() {
       // getting the text input box
       var input = document.getElementById("textbox");
       var text = input.value;
-      // splitting the text values into separate words
-      var words = text.split(/[\s\.]/);
       // a variable to hold the new generated html
       var highlightedText = "";
 
       // iterate through the words
-      for (var i = 0; i < words.length; i++) {
+      for (var i = 0; i < text.length; i++) {
         // use \u4E00-\u9FFF for normal chinese character ranges
         // use \u3400-\u4DBF for rarer chinese characters
 
         // appending text + highlighting chinese text
-        if (words[i].match(/[\u4E00-\u9FFF]/)) {
-          highlightedText += "<span style='background-color: yellow'>" + words[i] + "</span>";
+        if (text.charAt(i).match(/[\u4E00-\u9FFF]/)) {
+          highlightedText += "<span style='background-color: yellow'>" + text.charAt(i) + "</span>";
         } else {
-          highlightedText += " " + words[i] + " ";
+          highlightedText += text.charAt(i);
         }
       }
 
@@ -29,7 +27,8 @@
   </script>
 </head>
 <body>
-  <br>
+  <h3>Give some Chinese text:</h3>
+  <hr>
   <!-- php to update the textarea with the highlighted text -->
   <span>
     <div>
@@ -41,7 +40,14 @@
       <p>Highlighted Text:</p>
       <p id="highlighted-text"></p>
     </div>
+    <div>
+      <p>Translated Text:</p>
+      <?php
+
+      ?>
+    </div>
   </span>
+  <hr>
   <form method="POST">
     <label for="key">Enter Chinese:</label>
     <input type="text" name="key" id="key">
@@ -87,6 +93,9 @@
       print_r($_SESSION["dictionary"]);
     }
   ?>
+  <br><br>
   <hr>
   <p>Note: further development can include inputting multiple website URLs and translating Chinese text (or other langauges) to English instead of just highlighting it.</p>
+  <hr>
+  <p>By: Alex Wang</p>
 </body>
