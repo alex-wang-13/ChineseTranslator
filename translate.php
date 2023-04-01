@@ -17,7 +17,7 @@
         if (text.charAt(i).match(/[\u4E00-\u9FFF]/)) {
           highlightedText += "<span style='background-color: yellow'>" + text.charAt(i) + "</span>";
         } else {
-          highlightedText += text.charAt(i);
+          highlightedText += "" + text.charAt(i);
         }
       }
 
@@ -34,16 +34,31 @@
     <div>
       <label for="textbox">Enter text:</label>
       <br>
-      <textarea id="textbox" oninput="highlightWords()" rows="5" cols="50"></textarea>
+      <form method="POST">
+        <textarea name="text" id="textbox" rows="5" cols="50"></textarea>
+        <br>
+        <input type="submit" name="translate" value="Translate">
+      </form>
     </div>
     <div>
-      <p>Highlighted Text:</p>
-      <p id="highlighted-text"></p>
+      <!--p>Highlighted Text:</p>
+      <p id="highlighted-text"></p-->
     </div>
     <div>
       <p>Translated Text:</p>
       <?php
-
+        session_start();
+        if(isset($_SESSION["dictionary"]) && isset($_POST["translate"])) {
+          $dictionary = $_SESSION["dictionary"];
+          $text = $_POST["text"];
+          // initialize the translated text
+          foreach(preg_split('//u', $text, null, PREG_SPLIT_NO_EMPTY) as $grapheme) {
+            if(isset($dictionary[$grapheme])) {
+              $text = mb_ereg_replace($grapheme, $dictionary[$grapheme]." ", $text);
+            }
+          }
+        }
+        print_r($text);
       ?>
     </div>
   </span>
@@ -56,7 +71,8 @@
     <input type="text" name="value" id="value">
     <br><br>
     <input type="submit" name="submit" value="Store in Dictionary">
-    <input type="submit" name="reset" id="reset" value="Reset Dictionary">
+    <input type="submit" name="reset" value="Reset Dictionary">
+    <input type="submit" name="show" value="Show Dictionary">
   </form>
   <?php
     // start a session so that the dictionary can be updated between each submit
@@ -77,11 +93,6 @@
         $dictionary[$key] = $value;
         // update the dictionary
         $_SESSION["dictionary"] = $dictionary;
-        echo "Chinese: ".$key."<br>";
-        echo "English: ".$value."<br>";
-      } else {
-        echo "Chinese: [invalid] <br>";
-        echo "English: [invalid] <br>";
       }
       echo "Dictionary: <br>";
       print_r($_SESSION["dictionary"]);
@@ -89,6 +100,11 @@
 
     if(isset($_POST["reset"])) {
       $_SESSION["dictionary"] = array();
+      echo "Dictionary: <br>";
+      print_r($_SESSION["dictionary"]);
+    }
+
+    if(isset($_POST["show"])) {
       echo "Dictionary: <br>";
       print_r($_SESSION["dictionary"]);
     }
