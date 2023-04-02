@@ -1,6 +1,7 @@
 <head>
   <title>Translate!</title>
-  <script>
+  <!-- The following script is deprecated. It may be brought back in a future version -->
+  <!--script>
     function highlightWords() {
       // getting the text input box
       var input = document.getElementById("textbox");
@@ -24,12 +25,12 @@
       // updating html
       document.getElementById("highlighted-text").innerHTML = highlightedText;
     }
-  </script>
+  </script-->
 </head>
 <body>
   <h3>Give some Chinese text:</h3>
   <hr>
-  <!-- php to update the textarea with the highlighted text -->
+  <!-- A textbox for user input -->
   <span>
     <div>
       <label for="textbox">Enter text:</label>
@@ -40,29 +41,33 @@
         <input type="submit" name="translate" value="Translate">
       </form>
     </div>
-    <div>
-      <!--p>Highlighted Text:</p>
-      <p id="highlighted-text"></p-->
-    </div>
+    <!-- A script to translate the words in the text box with user-provided definitions -->
     <div>
       <p>Translated Text:</p>
       <?php
         session_start();
+        // verify that the dictionary and _POST variables are initialized
         if(isset($_SESSION["dictionary"]) && isset($_POST["translate"])) {
+          // grab the global dictionary variable
           $dictionary = $_SESSION["dictionary"];
+          // grab the text from _POST
           $text = $_POST["text"];
-          // initialize the translated text
+          // split the text into an array of graphemes, i.e. language units
+          // since utf-8 characters have variable lengths, split by //s to get all graphenes
           foreach(preg_split('//u', $text, null, PREG_SPLIT_NO_EMPTY) as $grapheme) {
+            // if the grapheme is in the dictionary, then replace it with its translation
             if(isset($dictionary[$grapheme])) {
-              $text = mb_ereg_replace($grapheme, $dictionary[$grapheme]." ", $text);
+              $text = mb_ereg_replace($grapheme, "[".$dictionary[$grapheme]."]", $text);
             }
           }
         }
+        // prints the translation
         print_r($text);
       ?>
     </div>
   </span>
   <hr>
+  <!-- A form to enter Chinese text and its English translations as key-value pairs -->
   <form method="POST">
     <label for="key">Enter Chinese:</label>
     <input type="text" name="key" id="key">
@@ -70,12 +75,15 @@
     <label for="value">Enter English:</label>
     <input type="text" name="value" id="value">
     <br><br>
+    <!-- Add the translation to the dictionary -->
     <input type="submit" name="submit" value="Store in Dictionary">
+    <!-- Clear the dictionary -->
     <input type="submit" name="reset" value="Reset Dictionary">
+    <!-- Show the dictionary on the webpage -->
     <input type="submit" name="show" value="Show Dictionary">
   </form>
+  <!-- A script to validate incoming dictionary entries -->
   <?php
-    // start a session so that the dictionary can be updated between each submit
     session_start();
 
     // initialize the dictionary
@@ -83,8 +91,9 @@
       $_SESSION["dictionary"] = array();
     }
 
+    // if _POST["submit"] is initialized, validate the entries
     if(isset($_POST["submit"])) {
-      // key the key and value
+      // get the key and value
       $key = $_POST["key"];
       $value = $_POST["value"];
       // validate the key and value; the key should only have chinese characters and the value only non-chinese
@@ -94,24 +103,22 @@
         // update the dictionary
         $_SESSION["dictionary"] = $dictionary;
       }
-      echo "Dictionary: <br>";
-      print_r($_SESSION["dictionary"]);
     }
 
+    // if _POST["reset"] then reinitialize the dictionary
     if(isset($_POST["reset"])) {
       $_SESSION["dictionary"] = array();
       echo "Dictionary: <br>";
       print_r($_SESSION["dictionary"]);
     }
 
+    // if _POST["show"] then show the surrent dictionary
     if(isset($_POST["show"])) {
       echo "Dictionary: <br>";
       print_r($_SESSION["dictionary"]);
     }
   ?>
   <br><br>
-  <hr>
-  <p>Note: further development can include inputting multiple website URLs and translating Chinese text (or other langauges) to English instead of just highlighting it.</p>
   <hr>
   <p>By: Alex Wang</p>
 </body>
