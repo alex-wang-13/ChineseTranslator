@@ -29,7 +29,6 @@
 </head>
 <body>
   <h3>Give some Chinese text:</h3>
-  <hr>
   <!-- A textbox for user input -->
   <span>
     <div>
@@ -119,6 +118,8 @@
     }
   ?>
   <br><br>
+  <hr>
+  <p>For a more in-depth explanation of how this tool works, click <a href="https://docs.google.com/document/d/1neCYdOvhbUxLS_kmUNgyA6cO1UcEVOMeV0zpGCs-dTs/edit?usp=sharing" target="_blank">here</a>.</p>
   <hr>
   <p>By: Alex Wang</p>
 </body>
