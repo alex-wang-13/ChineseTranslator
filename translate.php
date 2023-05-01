@@ -15,14 +15,21 @@
       <form method="POST">
         <div class="form-group">
           <label for="textbox">Enter text manually or automatically generate:</label>
+          <br/>
           <?php
             session_start();
+
             // code to generate chinese text
             if (isset($_POST['generate'])) {
               // retrieve the api key for chat-gpt
               $key = trim(file_get_contents('../../../api-key.txt'));
+
               // define prompt
-              $prompt = 'Give an example paragraph from a Chinese newspaper. Include no English in your response.';
+              $style = 'neutral';
+              if (isset($_POST['prompt-style'])) {
+                $style = $_POST['prompt-style'];
+              }
+              $prompt = 'Give an example paragraph in Chinese in a ' . $style . ' tone. Include no English in your response.';
 
               // shell command to access chat-gpt
               $cmd = 'curl https://api.openai.com/v1/chat/completions -H "Content-Type: application/json" -H "Authorization: Bearer ' . $key . '" -d \'{ "model": "gpt-3.5-turbo", "messages": [{"role": "user", "content": "' . $prompt . '"}], "temperature": 0.7 }\'';
@@ -37,7 +44,6 @@
               // display populated textarea
               echo '<textarea name="text" id="textbox" class="form-control" rows="5" cols="50">' . $content . '</textarea>';
               $_SESSION['input'] = $content;
-              echo $_SESSION['input'];
             } else {
               // use previously input to populate textarea
               echo '<textarea name="text" id="textbox" class="form-control" rows="5" cols="50">' . $_SESSION['input'] . '</textarea>';
@@ -46,6 +52,22 @@
         </div>
         <br/>
         <button type="submit" name="translate" class="btn btn-primary">Translate</button>
+        <br/>
+        <br/>
+        <p>Choose the style of text you'd like to translate:</p>
+        <div class="form-check">
+          <input class="form-check-input" type="radio" name="prompt-style" value="conversational">
+          <label class="form-check-label" for="conversational">Conversational Prompt</label>
+        </div>
+        <div class="form-check">
+          <input class="form-check-input" type="radio" name="prompt-style" value="journalistic">
+          <label class="form-check-label" for="journalistic">Journalistic Prompt</label>
+        </div>
+        <div class="form-check">
+          <input class="form-check-input" type="radio" name="prompt-style" value="academic">
+          <label class="form-check-label" for="academic">Academic Prompt</label>
+        </div>
+        <br/>
         <button type="submit" name="generate" class="btn text-light" style="background-color: orangered;">Generate Chinese</button>
       </form>
     </div>
