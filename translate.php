@@ -9,12 +9,12 @@
 
 <body class="bg-dark text-light">
   <div class="container mt-4">
-    <h3>Chinese text:</h3>
+    <h3>Test your Chinese...</h3>
     <!-- A textbox for user input -->
     <div class="mb-4">
       <form method="POST">
         <div class="form-group">
-          <label for="textbox">Enter text or automatically generate:</label>
+          <label for="textbox">Enter text manually or automatically generate:</label>
           <?php
             session_start();
             // code to generate chinese text
@@ -46,31 +46,33 @@
         </div>
         <br/>
         <button type="submit" name="translate" class="btn btn-primary">Translate</button>
-        <button type="submit" name="generate" class="btn btn-info">Generate Chinese</button>
+        <button type="submit" name="generate" class="btn text-light" style="background-color: orangered;">Generate Chinese</button>
       </form>
     </div>
+    <hr/>
     <!-- A form to enter Chinese text and its English translations as key-value pairs -->
+    <h3>Add words to the dictionary:</h3>
     <div class="mb-4">
       <form method="POST">
         <div class="row">
-        <div class="col-6">
-          <div class="form-group">
-            <label for="key">Enter Chinese Character:</label>
-            <input type="text" name="key" id="key" class="form-control">
+          <div class="col-6">
+            <div class="form-group">
+              <label for="key">Enter Chinese Character:</label>
+              <input type="text" name="key" id="key" class="form-control">
+            </div>
           </div>
-        </div>
-        <div class="col-6">
-          <div class="form-group">
-            <label for="value">Enter Translation:</label>
-            <input type="text" name="value" id="value" class="form-control">
+          <div class="col-6">
+            <div class="form-group">
+              <label for="value">Enter Translation:</label>
+              <input type="text" name="value" id="value" class="form-control">
+            </div>
           </div>
-        </div>
         </div>
         <br/>
         <!-- Add the translation to the dictionary -->
         <button type="submit" name="submit" class="btn btn-success">Store in Dictionary</button>
         <!-- Clear the dictionary -->
-        <button type="submit" name="reset" class="btn btn-danger">Reset Dictionary</button>
+        <button type="submit" name="reset" class="btn text-light" style="background-color: firebrick;">Reset Dictionary</button>
       </form>
     </div>
     <!-- A script to validate incoming dictionary entries -->
@@ -109,11 +111,11 @@
       }
 
       // show the dictionary
-      echo '<hr><h4>Dictionary:</h4>';
+      echo '<h4>Dictionary:</h4>';
       echo '<pre>';
       print_r($_SESSION['dictionary']);
       echo '</pre>';
-      echo '<hr><h4>Translated Text:</h4>';
+      echo '<hr/><h3>See the translated text:</h3><br/>';
 
       // verify that the dictionary and _POST variables are initialized
       if (isset($_SESSION['dictionary'])) { //&& isset($_POST['translate'])) {
@@ -136,7 +138,7 @@
       }
       // prints the translation
       print_r($text);
-      echo '<hr>';
+      echo '<hr/>';
     ?>
     </div>
   </div>
@@ -145,27 +147,42 @@
     style="background-color: black;"
   >
     <div class="container p-4">
-      <div class="col-sm-4 col-12">
-        <h5 class="text-uppercase">Contact</h5>
-        <ul class="list-unstyled">
-          <li>
-            <a href="mailto:alex.wang4@case.edu" target="_blank" style="color: white;">Email</a>
-          </li>
-          <li>
-            <a href="https://github.com/alex-wang-13" target="_blank" style="color: white;"
-              >Github</a
-            >
-          </li>
-          <li>
-            <a
-              href="https://www.linkedin.com/in/alex-wang-0525b4217/"
-              target="_blank" style="color: white;"
-              >LinkedIn</a
-            >
-          </li>
-        </ul>
+      <div class="row">
+        <div class="col-sm-6 col-6">
+          <h5 class="text-uppercase">Contact</h5>
+          <ul class="list-unstyled">
+            <li>
+              <a href="mailto:alex.wang4@case.edu" target="_blank" style="color: white;">Email</a>
+            </li>
+            <li>
+              <a href="https://github.com/alex-wang-13" target="_blank" style="color: white;"
+                >Github</a
+              >
+            </li>
+            <li>
+              <a
+                href="https://www.linkedin.com/in/alex-wang-0525b4217/"
+                target="_blank" style="color: white;"
+                >LinkedIn</a
+              >
+            </li>
+          </ul>
+        </div>
+        <div class="col-sm-6 col-6">
+          <h5 class="text-uppercase">More Information</h5>
+          <ul class="list-unstyled">
+            <li>
+              <a class="text-uppercase" href="/README.md" target="_blank" style="color: white;">Readme</a>
+            </li>
+            <li>
+              <a href="https://github.com/alex-wang-13/ChineseTranslator" target="_blank" style="color: white;"
+                >Source Code</a
+              >
+            </li>
+          </ul>
+        </div>
+        &copy; 2023 Alex Wang. All rights reserved.
       </div>
-      &copy; 2023 Alex Wang. All rights reserved.
     </div>
   </footer>
 </body>
