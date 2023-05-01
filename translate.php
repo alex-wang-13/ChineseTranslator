@@ -40,10 +40,10 @@
               // decode the json response from api + extract chat-gpt's output
               $arr = json_decode($response, true, 512, 0);
               $content = $arr['choices']['0']['message']['content'];
+              $_SESSION['input'] = $content;
 
               // display populated textarea
               echo '<textarea name="text" id="textbox" class="form-control" rows="5" cols="50">' . $content . '</textarea>';
-              $_SESSION['input'] = $content;
             } else {
               // use previously input to populate textarea
               echo '<textarea name="text" id="textbox" class="form-control" rows="5" cols="50">' . $_SESSION['input'] . '</textarea>';
