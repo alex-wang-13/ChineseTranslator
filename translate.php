@@ -24,11 +24,11 @@
     <div class="mb-4">
       <form method="POST">
         <div class="form-group">
-          <label for="key">Enter Chinese:</label>
+          <label for="key">Enter Chinese Character:</label>
           <input type="text" name="key" id="key" class="form-control">
         </div>
         <div class="form-group">
-          <label for="value">Enter English:</label>
+          <label for="value">Enter Translation:</label>
           <input type="text" name="value" id="value" class="form-control">
         </div>
         <!-- Add the translation to the dictionary -->
@@ -46,13 +46,18 @@
         $_SESSION["dictionary"] = array();
       }
 
+      // initailize input sentence
+      if (!isset($_SESSION["input"])) {
+        $_SESSION["input"] = "Enter a sentence in Chinese.";
+      }
+
       // if _POST["submit"] is initialized, validate the entries
       if (isset($_POST["submit"])) {
         // get the key and value
         $key = $_POST["key"];
         $value = $_POST["value"];
         // validate the key and value; the key should only have chinese characters and the value only non-chinese
-        if (preg_match("/^[\x{4e00}-\x{9fff}]+$/u", $key) && !preg_match("/^[\x{4e00}-\x{9fff}]+$/u", $value)) {
+        if (preg_match("/^[\x{4e00}-\x{9fff}]$/u", $key) && !preg_match("/^[\x{4e00}-\x{9fff}]+$/u", $value)) {
           $dictionary = $_SESSION["dictionary"];
           $dictionary[$key] = $value;
           // update the dictionary
@@ -75,11 +80,15 @@
       echo "<hr><h4>Translated Text:</h4>";
 
       // verify that the dictionary and _POST variables are initialized
-      if (isset($_SESSION["dictionary"]) && isset($_POST["translate"])) {
+      if (isset($_SESSION["dictionary"])) { //&& isset($_POST["translate"])) {
         // grab the global dictionary variable
         $dictionary = $_SESSION["dictionary"];
-        // grab the text from _POST
-        $text = $_POST["text"];
+        // grab the text from _POST or _SESSION
+        $text = $_SESSION["input"];
+        if (isset($_POST["translate"])) {
+          $text = $_POST["text"];
+          $_SESSION["input"] = $text;
+        }
         // split the text into an array of graphemes, i.e. language units
         // since utf-8 characters have variable lengths, split by //s to get all graphenes
         foreach (preg_split('//u', $text, null, PREG_SPLIT_NO_EMPTY) as $grapheme) {
